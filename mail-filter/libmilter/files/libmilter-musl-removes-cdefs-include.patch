@@ -1,0 +1,13 @@
+--- a/include/sm/os/sm_os_linux.h	2017-01-11 17:31:15.649367810 +0100
++++ b/include/sm/os/sm_os_linux.h	2017-01-11 17:17:39.249387353 +0100
+@@ -33,7 +33,9 @@
+ # endif /* LINUX_VERSION_CODE */
+ #endif /* SM_CONF_SHM */
+
+-#define SM_CONF_SYS_CDEFS_H	1
++#if defined(__GLIBC__) || defined(__UCLIBC__)
++# define SM_CONF_SYS_CDEFS_H	1
++#endif /* __GLIBC__ */
+ #ifndef SM_CONF_SEM
+ # define SM_CONF_SEM	2
+ #endif /* SM_CONF_SEM */
