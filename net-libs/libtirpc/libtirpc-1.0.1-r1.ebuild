@@ -3,7 +3,7 @@
 
 EAPI="5"
 
-inherit multilib-minimal toolchain-funcs
+inherit multilib-minimal toolchain-funcs eutils
 
 DESCRIPTION="Transport Independent RPC library (SunRPC replacement)"
 HOMEPAGE="http://libtirpc.sourceforge.net/"
@@ -12,7 +12,7 @@ SRC_URI="mirror://sourceforge/${PN}/${P}.tar.bz2
 
 LICENSE="GPL-2"
 SLOT="0/3" # subslot matches SONAME major
-KEYWORDS="alpha amd64 arm ~arm64 hppa ia64 ~mips ppc ppc64 ~s390 ~sh sparc x86"
+KEYWORDS="alpha amd64 arm ~arm64 hppa ~ia64 ~mips ppc ppc64 ~s390 ~sh sparc x86"
 IUSE="ipv6 kerberos static-libs"
 
 RDEPEND="kerberos? ( >=virtual/krb5-0-r1[${MULTILIB_USEDEP}] )"
@@ -21,15 +21,15 @@ DEPEND="${RDEPEND}
 	app-arch/xz-utils
 	>=virtual/pkgconfig-0-r1[${MULTILIB_USEDEP}]"
 
-src_unpack() {
-	unpack ${A}
-	cp -r tirpc "${S}"/ || die
-}
+PATCHES=(
+	"${FILESDIR}/${P}-CVE-2017-8779.patch"
+	"${FILESDIR}/git.patch" # Musl fixes
+)
 
 src_prepare() {
-	default
-	# Musl fixes
-	epatch "${FILESDIR}"/git.patch
+	cp -r "${WORKDIR}"/tirpc "${S}"/ || die
+	epatch "${PATCHES[@]}"
+	epatch_user
 }
 
 multilib_src_configure() {
